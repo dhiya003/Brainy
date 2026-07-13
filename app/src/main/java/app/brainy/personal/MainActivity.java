@@ -9,7 +9,7 @@ import android.os.*;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.webkit.*;
-import android.util.Base64;
+import android.util.Base64;\nimport android.graphics.BitmapFactory;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
         try{startActivityForResult(i,VOICE);}catch(Exception e){webView.evaluateJavascript("window.voiceResult('',true)",null);}
     }
     public void ocrBase64(String data){
-        try{String raw=data.substring(data.indexOf(',')+1);byte[] bytes=Base64.decode(raw,Base64.DEFAULT);runOcr(InputImage.fromByteArray(bytes,0));}
+        try{String raw=data.substring(data.indexOf(',')+1);byte[] bytes=Base64.decode(raw,Base64.DEFAULT);runOcr(InputImage.fromBitmap(BitmapFactory.decodeByteArray(bytes,0,bytes.length),0));}
         catch(Exception e){webView.evaluateJavascript("window.ocrResult('',true)",null);}
     }
     private void runOcr(InputImage image){
@@ -74,7 +74,7 @@ class BrainyBridge {
     @JavascriptInterface public void scheduleJourney(String json){try{ReminderEngine.scheduleJourney(a,new JSONObject(json));}catch(Exception ignored){}}
     @JavascriptInterface public void completeTask(String id){ReminderEngine.complete(a,id);}
     @JavascriptInterface public void deleteTask(String id){ReminderEngine.delete(a,id);}
-    @JavascriptInterface public String nativeAgenda(boolean tomorrow){return ReminderEngine.agenda(a,tomorrow);}
+    @JavascriptInterface public String nativeAgenda(boolean tomorrow){return ReminderEngine.agenda(a,tomorrow);}\n    @JavascriptInterface public String nativeTasks(){return ReminderEngine.tasks(a).toString();}
     @JavascriptInterface public void startVoiceInput(){a.runOnUiThread(a::startVoice);}
     @JavascriptInterface public void recognizeImage(String data){a.runOnUiThread(()->a.ocrBase64(data));}
     @JavascriptInterface public void openExternal(String url){try{Intent i=new Intent(Intent.ACTION_VIEW,Uri.parse(url));i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);a.startActivity(i);}catch(Exception ignored){}}
