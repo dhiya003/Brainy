@@ -18,7 +18,7 @@ android {
     }
 }
 
-dependencies {
+configurations.configureEach {\n    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")\n    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")\n}\n\ndependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("com.google.mlkit:text-recognition:16.0.1")
 }
