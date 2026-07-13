@@ -9,7 +9,8 @@ import android.os.*;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.webkit.*;
-import android.util.Base64;\nimport android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.graphics.BitmapFactory;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
     private void deliverShare(){
         if(webView==null)return;
         if(pendingText!=null){String q=JSONObject.quote(pendingText);webView.evaluateJavascript("window.receiveShare("+q+",'text')",null);pendingText=null;}
-        if(pendingImage!=null){Uri u=pendingImage;pendingImage=null;try{runOcr(InputImage.fromFilePath(this,u));}catch(Exception e){webView.evaluateJavascript(\"window.ocrResult('',true)\",null);}}
+        if(pendingImage!=null){Uri u=pendingImage;pendingImage=null;try{runOcr(InputImage.fromFilePath(this,u));}catch(Exception e){webView.evaluateJavascript("window.ocrResult('',true)",null);}}
     }
     public void startVoice(){
         Intent i=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM).putExtra(RecognizerIntent.EXTRA_PROMPT,"Tell Brainy what to remember");
@@ -74,7 +75,8 @@ class BrainyBridge {
     @JavascriptInterface public void scheduleJourney(String json){try{ReminderEngine.scheduleJourney(a,new JSONObject(json));}catch(Exception ignored){}}
     @JavascriptInterface public void completeTask(String id){ReminderEngine.complete(a,id);}
     @JavascriptInterface public void deleteTask(String id){ReminderEngine.delete(a,id);}
-    @JavascriptInterface public String nativeAgenda(boolean tomorrow){return ReminderEngine.agenda(a,tomorrow);}\n    @JavascriptInterface public String nativeTasks(){return ReminderEngine.tasks(a).toString();}
+    @JavascriptInterface public String nativeAgenda(boolean tomorrow){return ReminderEngine.agenda(a,tomorrow);}
+    @JavascriptInterface public String nativeTasks(){return ReminderEngine.tasks(a).toString();}
     @JavascriptInterface public void startVoiceInput(){a.runOnUiThread(a::startVoice);}
     @JavascriptInterface public void recognizeImage(String data){a.runOnUiThread(()->a.ocrBase64(data));}
     @JavascriptInterface public void openExternal(String url){try{Intent i=new Intent(Intent.ACTION_VIEW,Uri.parse(url));i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);a.startActivity(i);}catch(Exception ignored){}}
