@@ -21,7 +21,8 @@ jobs:
       - name: Validate bundled app
         run: |
           test -f app/src/main/assets/index.html
-          grep -q "seedTestData" app/src/main/assets/index.html
+          grep -q "Message Brainy" app/src/main/assets/index.html
+          grep -q "naturalUpdate" app/src/main/assets/index.html
           grep -q "ReminderEngine.restoreAll" app/src/main/java/app/brainy/personal/MainActivity.java
           ! grep -R "chatgpt.site" app/src/main
       - uses: actions/setup-java@v4

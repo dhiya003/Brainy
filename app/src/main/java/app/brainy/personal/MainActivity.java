@@ -79,5 +79,14 @@ class BrainyBridge {
     @JavascriptInterface public String nativeTasks(){return ReminderEngine.tasks(a).toString();}
     @JavascriptInterface public void startVoiceInput(){a.runOnUiThread(a::startVoice);}
     @JavascriptInterface public void recognizeImage(String data){a.runOnUiThread(()->a.ocrBase64(data));}
-    @JavascriptInterface public void openExternal(String url){try{Intent i=new Intent(Intent.ACTION_VIEW,Uri.parse(url));i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);a.startActivity(i);}catch(Exception ignored){}}
+    @JavascriptInterface public void openExternal(String url){
+        try{
+            Uri uri=Uri.parse(url); Intent i=new Intent(Intent.ACTION_VIEW,uri); i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if("upi".equalsIgnoreCase(uri.getScheme())){
+                i.setPackage("com.google.android.apps.nbu.paisa.user");
+                try{a.startActivity(i);return;}catch(Exception unavailable){i.setPackage(null);}
+            }
+            a.startActivity(i);
+        }catch(Exception ignored){}
+    }
 }
