@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
     private void deliverShare(){
         if(webView==null)return;
         if(pendingText!=null){String q=JSONObject.quote(pendingText);webView.evaluateJavascript("window.receiveShare("+q+",'text')",null);pendingText=null;}
-        if(pendingImage!=null){Uri u=pendingImage;pendingImage=null;runOcr(InputImage.fromFilePath(this,u));}
+        if(pendingImage!=null){Uri u=pendingImage;pendingImage=null;try{runOcr(InputImage.fromFilePath(this,u));}catch(Exception e){webView.evaluateJavascript(\"window.ocrResult('',true)\",null);}}
     }
     public void startVoice(){
         Intent i=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM).putExtra(RecognizerIntent.EXTRA_PROMPT,"Tell Brainy what to remember");
