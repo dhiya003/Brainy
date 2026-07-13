@@ -11,7 +11,7 @@ import android.webkit.*;
 import java.util.UUID;
 
 public class MainActivity extends Activity {
-    private static final String APP_URL = "https://brainy-personal-ai.dhiviyalakshmi003.chatgpt.site";
+    private static final String APP_URL = "file:///android_asset/index.html";
     private WebView webView;
 
     @Override public void onCreate(Bundle state) {
@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+        settings.setAllowFileAccess(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new BrainyBridge(this), "BrainyAndroid");
