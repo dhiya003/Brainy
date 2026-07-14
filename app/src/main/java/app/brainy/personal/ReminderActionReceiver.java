@@ -15,10 +15,11 @@ public class ReminderActionReceiver extends BroadcastReceiver {
         }else if(task!=null&&"app.brainy.SNOOZE".equals(action)){
             long at=System.currentTimeMillis()+10*60_000L;
             ReminderEngine.recordAction(c,taskId,"snoozed",at);
-            ReminderEngine.schedule(c,task,"snooze",at,"Snoozed reminder","Snoozed 10 minutes");
+            JSONObject updated=ReminderEngine.task(c,taskId);
+            ReminderEngine.schedule(c,updated==null?task:updated,"snooze",at,"Snoozed reminder","Snoozed 10 minutes");
             c.getSystemService(NotificationManager.class).cancel(ReminderEngine.requestCode(taskId,i.getStringExtra("kind")));
         }else if(task!=null&&"app.brainy.RESCHEDULE".equals(action)){
-            try{long due=System.currentTimeMillis()+60*60_000L;task.put("dueAtMs",due);ReminderEngine.recordAction(c,taskId,"rescheduled",due);ReminderEngine.cancelTask(c,taskId);ReminderEngine.scheduleJourney(c,task);}
+            try{long due=System.currentTimeMillis()+60*60_000L;ReminderEngine.recordAction(c,taskId,"rescheduled",due);JSONObject updated=ReminderEngine.task(c,taskId);ReminderEngine.cancelTask(c,taskId);if(updated!=null)ReminderEngine.scheduleJourney(c,updated);}
             catch(Exception ignored){}
             c.getSystemService(NotificationManager.class).cancel(ReminderEngine.requestCode(taskId,i.getStringExtra("kind")));
         }else if("app.brainy.OPEN".equals(action)&&task!=null){
