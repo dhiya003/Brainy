@@ -77,6 +77,10 @@ class BrainyBridge {
     @JavascriptInterface public void deleteTask(String id){ReminderEngine.delete(a,id);}
     @JavascriptInterface public String nativeAgenda(boolean tomorrow){return ReminderEngine.agenda(a,tomorrow);}
     @JavascriptInterface public String nativeTasks(){return ReminderEngine.tasks(a).toString();}
+    @JavascriptInterface public String snoozedTasks(){return ReminderEngine.snoozed(a);}
+    @JavascriptInterface public String reminderDiagnostics(){return ReminderEngine.diagnostics(a);}
+    @JavascriptInterface public boolean isIgnoringBatteryOptimizations(){if(Build.VERSION.SDK_INT<23)return true;PowerManager p=(PowerManager)a.getSystemService(Context.POWER_SERVICE);return p!=null&&p.isIgnoringBatteryOptimizations(a.getPackageName());}
+    @JavascriptInterface public void openBatteryOptimizationSettings(){a.runOnUiThread(()->{try{a.startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}catch(Exception e){a.startActivity(new Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}});}
     @JavascriptInterface public void startVoiceInput(){a.runOnUiThread(a::startVoice);}
     @JavascriptInterface public void recognizeImage(String data){a.runOnUiThread(()->a.ocrBase64(data));}
     @JavascriptInterface public void openExternal(String url){
