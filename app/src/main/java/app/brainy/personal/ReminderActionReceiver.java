@@ -13,15 +13,17 @@ public class ReminderActionReceiver extends BroadcastReceiver {
             ReminderEngine.complete(c,taskId);
             c.getSystemService(NotificationManager.class).cancel(ReminderEngine.requestCode(taskId,i.getStringExtra("kind")));
         }else if(task!=null&&"app.brainy.SNOOZE".equals(action)){
-            ReminderEngine.schedule(c,task,"snooze",System.currentTimeMillis()+10*60_000L,"Snoozed reminder","Snoozed 10 minutes");
-            c.getSystemService(NotificationManager.class).cancelAll();
+            long at=System.currentTimeMillis()+10*60_000L;
+            ReminderEngine.recordAction(c,taskId,"snoozed",at);
+            ReminderEngine.schedule(c,task,"snooze",at,"Snoozed reminder","Snoozed 10 minutes");
+            c.getSystemService(NotificationManager.class).cancel(ReminderEngine.requestCode(taskId,i.getStringExtra("kind")));
         }else if(task!=null&&"app.brainy.RESCHEDULE".equals(action)){
-            try{long due=System.currentTimeMillis()+60*60_000L;task.put("dueAtMs",due);ReminderEngine.cancelTask(c,taskId);ReminderEngine.scheduleJourney(c,task);}
+            try{long due=System.currentTimeMillis()+60*60_000L;task.put("dueAtMs",due);ReminderEngine.recordAction(c,taskId,"rescheduled",due);ReminderEngine.cancelTask(c,taskId);ReminderEngine.scheduleJourney(c,task);}
             catch(Exception ignored){}
-            c.getSystemService(NotificationManager.class).cancelAll();
+            c.getSystemService(NotificationManager.class).cancel(ReminderEngine.requestCode(taskId,i.getStringExtra("kind")));
         }else if("app.brainy.OPEN".equals(action)&&task!=null){
             String url=task.optString("actionUrl","");
-            if(!url.isEmpty()){try{Intent open=new Intent(Intent.ACTION_VIEW,android.net.Uri.parse(url));open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);c.startActivity(open);}catch(Exception ignored){}}
+            if(!url.isEmpty()){try{android.net.Uri uri=android.net.Uri.parse(url);Intent open=new Intent(Intent.ACTION_VIEW,uri);open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);if("upi".equalsIgnoreCase(uri.getScheme()))open.setPackage("com.google.android.apps.nbu.paisa.user");try{c.startActivity(open);}catch(Exception unavailable){open.setPackage(null);c.startActivity(open);}ReminderEngine.recordAction(c,taskId,"opened_external",0);}catch(Exception ignored){}}
         }
     }
 }
