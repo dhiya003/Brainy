@@ -24,6 +24,10 @@ jobs:
           grep -q "Message Brainy" app/src/main/assets/index.html
           grep -q "naturalUpdate" app/src/main/assets/index.html
           grep -q "ReminderEngine.restoreAll" app/src/main/java/app/brainy/personal/MainActivity.java
+          grep -q "snoozedTasks" app/src/main/java/app/brainy/personal/MainActivity.java
+          grep -q "shouldDeliver" app/src/main/java/app/brainy/personal/NotificationReceiver.java
+          grep -q "TIMEZONE_CHANGED" app/src/main/AndroidManifest.xml
+          grep -q "preferredLeadMinutes" app/src/main/java/app/brainy/personal/ReminderEngine.java
           ! grep -R "chatgpt.site" app/src/main
       - uses: actions/setup-java@v4
         with:

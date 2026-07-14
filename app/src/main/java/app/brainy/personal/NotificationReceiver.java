@@ -14,6 +14,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context c, Intent intent) {
         String taskId=intent.getStringExtra("taskId"),kind=intent.getStringExtra("kind");
         if(taskId==null)return;
+        long scheduledAt=intent.getLongExtra("scheduledAt",0);
+        if(!ReminderEngine.shouldDeliver(c,taskId,kind==null?"reminder":kind,scheduledAt))return;
         String title,body; JSONObject task=ReminderEngine.task(c,taskId);
         boolean daily="daily".equals(taskId);
         if(daily){
@@ -34,6 +36,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationCompat.Builder b=new NotificationCompat.Builder(c,ReminderEngine.CHANNEL)
             .setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle(title).setContentText(body)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(body)).setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_REMINDER).setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setAutoCancel(true).setContentIntent(content);
         if(!daily){
             b.addAction(0,"Complete",action(c,"app.brainy.COMPLETE",taskId,kind,1))
